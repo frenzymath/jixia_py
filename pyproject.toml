@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jixia"
+description = "Python binding for jixia"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+keywords = [
+  "lean",
+  "programming language",
+  "proof assistant",
+]
+authors = [
+  { name = "Tony Beta Lambda", email = "tonybetalambda@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Other",
+  "Topic :: File Formats :: JSON :: JSON Schema",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Typing :: Typed",
+]
+dynamic = ["version"]
+dependencies = [
+  "pydantic>=2.10",
+]
+
+[project.optional-dependencies]
+docs = [
+  "sphinx",
+  "sphinx-rtd-theme",
+  "autodoc_pydantic",
+]
+
+[project.urls]
+Source = "https://github.com/frenzymath/jixia_py"
+
+[tool.hatch.version]
+path = "src/jixia/__init__.py"

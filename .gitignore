@@ -1,0 +1,7 @@
+__pycache__/
+.venv/
+.idea/
+.*.swp
+.DS_Store
+/docs/build/
+/dist
