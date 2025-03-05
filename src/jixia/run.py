@@ -79,16 +79,20 @@ class LeanProject:
         self.root = Path(root)
         self.output_dir = self.root / output_dir
 
-    def path_of_module(self, module_name: LeanName) -> Path:
+    def path_of_module(self, module_name: LeanName, base_dir: Optional[AnyPath] = None) -> Path:
         """Return the source file of the module"""
-        return self.root / Path(*module_name).with_suffix(".lean")
+        if base_dir is None:
+            base_dir = self.root
+        return Path(base_dir) / Path(*module_name).with_suffix(".lean")
 
     # TODO: align with the build system and take packages into consideration
-    def find_modules(self, include_hidden_dirs: bool = True) -> list[LeanName]:
+    def find_modules(self, base_dir: Optional[AnyPath] = None, include_hidden_dirs: bool = True) -> list[LeanName]:
         """Return the list of all Lean modules"""
+        if base_dir is None:
+            base_dir = self.root
         modules = []
-        for path, dirs, files in os.walk(self.root):
-            module_path = Path(path).relative_to(self.root).parts
+        for path, dirs, files in os.walk(base_dir):
+            module_path = Path(path).relative_to(base_dir).parts
             modules += [module_path + (f[:-5],) for f in files if f.endswith(".lean")]
             if not include_hidden_dirs:
                 dirs[:] = [d for d in dirs if not d.startswith(".")]
@@ -97,13 +101,14 @@ class LeanProject:
     def batch_run_jixia(
             self,
             *,
+            base_dir: Optional[AnyPath] = None,
             prefixes: Optional[list[LeanName]] = None,
             plugins: Iterable[Plugin] = ALL_PLUGINS,
             run_initializers: bool = True,
-            force: bool = False
+            force: bool = False,
     ) -> list[tuple[LeanName, CompletedProcess]]:
         """
-        Run jixia on every file in this project.
+        Run jixia on every file in the context of this project.
 
         :param prefixes: only process modules with one of the prefixes
         :param plugins:
@@ -112,7 +117,7 @@ class LeanProject:
             see documentation of :func:`run_jixia`
         :return: a list of all (module, CompletedProcess | None) pairs
         """
-        modules = self.find_modules()
+        modules = self.find_modules(base_dir)
         if prefixes is not None:
             modules = [m for m in modules if any(is_prefix_of(p, m) for p in prefixes)]
         self.output_dir.mkdir(exist_ok=True)
@@ -121,7 +126,7 @@ class LeanProject:
         with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
             futures = {executor.submit(
                 run_jixia,
-                self.path_of_module(m),
+                self.path_of_module(m, base_dir),
                 pp_name(m),
                 self.root,
                 plugins,
