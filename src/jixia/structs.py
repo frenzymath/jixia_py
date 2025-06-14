@@ -316,7 +316,7 @@ class MacroInfo(BaseModel):
     expanded: PPSyntaxWithKind
 
 
-SimpleElabInfo = Literal["command", "field", "option", "completion", "uw", "custom", "alias", "redecl", "omission"]
+SimpleElabInfo = Literal["command", "field", "option", "completion", "uw", "custom", "alias", "redecl", "omission", "partial", "term"]
 
 
 class ElabInfo(BaseModel):
@@ -344,3 +344,10 @@ class InfoTree(RootModel):
     info: ElabInfo
     ref: PPSyntaxWithKind
     children: list[Self]
+
+    @classmethod
+    def from_str(cls: type[M], data: str) -> list[M]:
+        """Construct a model from a str, but do not use pydantic to validate json"""
+        import json
+        data = json.loads(data)
+        return TypeAdapter(list[cls]).validate_python(data)
