@@ -316,7 +316,7 @@ class MacroInfo(BaseModel):
     expanded: PPSyntaxWithKind
 
 
-SimpleElabInfo = Literal["command", "field", "option", "completion", "uw", "custom", "alias", "redecl", "omission"]
+SimpleElabInfo = Literal["command", "field", "option", "completion", "uw", "custom", "alias", "redecl", "omission", "partial", "term"]
 
 
 class ElabInfo(BaseModel):
