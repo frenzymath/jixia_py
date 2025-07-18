@@ -111,6 +111,10 @@ DeclarationKind = Literal[
 def is_disjoint_union(*xs) -> bool:
     return sum(x is not None for x in xs) == 1
 
+def ensure_disjoint_union(o, fields: list[str]):
+    if not is_disjoint_union(getattr(o, f) for f in fields):
+        raise TypeError("exactly one of [" + ", ".join(fields) + "] is expected")
+
 
 class StringRange(NamedTuple):
     """A byte range within a file"""
@@ -172,8 +176,7 @@ class OpenDecl(BaseModel):
 
     @model_validator(mode="after")
     def ensure_disjoint_union(self) -> Self:
-        if not is_disjoint_union(self.simple, self.rename):
-            raise TypeError("exactly one of simple or rename is expected")
+        ensure_disjoint_union(self, ["simple", "rename"])
         return self
 
 
@@ -334,8 +337,7 @@ class ElabInfo(BaseModel):
 
     @model_validator(mode="after")
     def ensure_disjoint_union(self) -> Self:
-        if not is_disjoint_union(self.term, self.tactic, self.macro, self.simple):
-            raise TypeError("exactly one of term, tactic, macro, or simple is expected")
+        ensure_disjoint_union(self, ["term", "tactic", "macro", "simple"])
         return self
 
 
