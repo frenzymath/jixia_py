@@ -1,6 +1,7 @@
+import json
 from collections.abc import Sequence
 from os import PathLike
-from typing import Optional, Literal, NamedTuple, Self, TypeVar, AnyStr, ClassVar
+from typing import Optional, Literal, NamedTuple, Self, TypeVar, AnyStr, ClassVar, Any
 
 import pydantic
 from pydantic import ConfigDict, Field, model_validator, NonNegativeInt, TypeAdapter
@@ -41,6 +42,10 @@ class RootModel(BaseModel):
     _plugin_name: ClassVar[Plugin]
 
     @classmethod
+    def from_obj(cls: type[M], obj: Any) -> list[M]:
+        return TypeAdapter(list[cls]).validate_python(obj)
+
+    @classmethod
     def from_str(cls: type[M], data: str) -> list[M]:
         """Construct a list of models from a str"""
         return TypeAdapter(list[cls]).validate_json(data)
@@ -48,8 +53,10 @@ class RootModel(BaseModel):
     @classmethod
     def from_json_file(cls: type[M], filename: AnyPath) -> list[M]:
         """Read a list of models from a json file"""
+        # Use from_obj instead of from_str since the latter can cause stack overflow on large objects
         with open(filename) as fp:
-            return cls.from_str(fp.read())
+            obj = json.load(fp)
+            return cls.from_obj(obj)
 
 
 LeanName = Sequence[str | NonNegativeInt]
