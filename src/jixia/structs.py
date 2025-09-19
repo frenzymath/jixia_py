@@ -259,13 +259,6 @@ class Variable(BaseModel):
     """Value of this variable if it is defined by a `let`, or None otherwise"""
     is_prop: bool
 
-    @model_validator(mode="after")
-    def check_binder_value(self) -> Self:
-        # binder_info is omitted iff it's a let binding
-        if (self.binder_info is None) == (self.value is None):
-            raise ValueError("Invalid binder_info")
-        return self
-
 
 Context = list[Variable]
 """A :term:`local context` in Lean"""
