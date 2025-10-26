@@ -303,6 +303,14 @@ class SpecialValue(BaseModel):
     """Marks the current value is of a special form of interest"""
     const: Optional[LeanName] = Field(default=None)
     """This value is a constant reference"""
+    fvar: Optional[LeanName] = Field(default=None)
+    """This value is a fvar reference"""
+
+    @model_validator(mode="after")
+    def ensure_disjoint_union(self) -> Self:
+        ensure_disjoint_union(self, ["const", "fvar"])
+        return self
+
 
 
 class TermElabInfo(BaseModel):
