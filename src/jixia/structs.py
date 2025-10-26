@@ -258,6 +258,7 @@ class Variable(BaseModel):
 
     Usually called a :term:`free variable` or an `fvar` in Lean terminology.
     """
+    id: LeanName
     name: LeanName
     binder_info: Optional[BinderInfo] = Field(default=None)
     """Binder info of this variable, or None if it is defined by a `let`"""
