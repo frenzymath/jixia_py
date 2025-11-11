@@ -32,7 +32,7 @@ class BaseModel(pydantic.BaseModel):
     """
     :meta private:
     """
-    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True, strict=True)
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
 
 M = TypeVar("M", bound="RootModel")
@@ -98,7 +98,8 @@ class ModuleInfo(BaseModel):
 
 # Declaration
 BinderInfo = Literal["default", "implicit", "strictImplicit", "instImplicit"]
-Visibility = Literal["regular", "protected", "private"]
+Visibility = Literal["regular", "private", "public"]
+ComputeKind = Literal["regular", "meta", "noncomputable"]
 RecKind = Literal["default", "partial", "nonrec"]
 DeclarationKind = Literal[
     "abbrev",
@@ -148,11 +149,11 @@ class Modifiers(BaseModel):
     """A modifier attached to a declaration"""
     visibility: Visibility
     """Visibility level of a declaration"""
-    is_noncomputable: bool
+    compute_kind: ComputeKind
     rec_kind: RecKind
     """Recursion level of a declaration"""
     is_unsafe: bool
-    docstring: Optional[str] = Field(default=None, alias="docString")
+    docstring: Optional[tuple[str, bool]] = Field(default=None, alias="docString")
 
 
 class Syntax(BaseModel):
