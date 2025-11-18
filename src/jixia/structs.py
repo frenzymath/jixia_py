@@ -243,7 +243,9 @@ class Symbol(RootModel):
 
     kind: SymbolKind
     name: LeanName
-    type: str
+    type_full: Optional[str]
+    type_readable: Optional[str]
+    type_fallback: str
     type_references: list[LeanName]
     """Names used in defining the type of this symbol"""
     value_references: Optional[list[LeanName]]
