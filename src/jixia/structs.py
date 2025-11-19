@@ -253,6 +253,10 @@ class Symbol(RootModel):
     is_prop: bool
     """Whether the type of this symbol is a `Prop`"""
 
+    @property
+    def type(self) -> str:
+        return self.type_full or self.type_fallback
+
 
 # Context / Goal
 class Variable(BaseModel):
