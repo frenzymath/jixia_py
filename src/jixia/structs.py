@@ -226,8 +226,8 @@ class Declaration(RootModel):
     """The signature part, e.g., `{α : Sort u} (a : α) : α` in `def id {α : Sort u} (a : α) : α`"""
     modifiers: Modifiers
     params: list[Param]
-    type: Optional[Syntax]
-    value: Optional[Syntax]
+    type: Optional[PPSyntax]
+    value: Optional[PPSyntax]
     scope_info: ScopeInfo
 
 
