@@ -33,7 +33,11 @@ class BaseModel(pydantic.BaseModel):
     :meta private:
     """
 
-    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True, 
+        validate_by_name=True
+    )
 
 
 M = TypeVar("M", bound="RootModel")
