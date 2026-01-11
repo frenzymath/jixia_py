@@ -289,6 +289,7 @@ class Variable(BaseModel):
     """Value of this variable if it is defined by a `let`, or None otherwise"""
     is_prop: bool
     is_let: bool
+    is_referenced_later: bool = Field(default=False)
 
 
 Context = list[Variable]
