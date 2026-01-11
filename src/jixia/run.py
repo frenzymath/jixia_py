@@ -33,6 +33,7 @@ def run_jixia(
     output_template: Template = Template("$file_dir/$module.$p.json"),
     run_initializers: bool = True,
     force: bool = False,
+    executable: AnyPath = executable,
 ) -> Optional[CompletedProcess]:
     """
     Run jixia with given options.
