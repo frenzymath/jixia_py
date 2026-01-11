@@ -34,9 +34,7 @@ class BaseModel(pydantic.BaseModel):
     """
 
     model_config = ConfigDict(
-        alias_generator=to_camel,
-        populate_by_name=True, 
-        validate_by_name=True
+        alias_generator=to_camel, populate_by_name=True, validate_by_name=True
     )
 
 
@@ -290,6 +288,7 @@ class Variable(BaseModel):
     value: Optional[str] = Field(default=None)
     """Value of this variable if it is defined by a `let`, or None otherwise"""
     is_prop: bool
+    is_let: bool
 
 
 Context = list[Variable]
