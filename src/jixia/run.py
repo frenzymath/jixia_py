@@ -6,18 +6,18 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from pathlib import Path
 from string import Template
 from subprocess import CompletedProcess
-from typing import Optional, Iterable, TypeVar
+from typing import Iterable, Optional, TypeVar
 
 from .structs import (
+    ALL_PLUGINS,
     AnyPath,
     LeanName,
+    ModuleInfo,
     Plugin,
-    pp_name,
+    RootModel,
     is_prefix_of,
     plugin_short_name,
-    ALL_PLUGINS,
-    ModuleInfo,
-    RootModel,
+    pp_name,
 )
 
 logger = logging.getLogger(__name__)
@@ -122,6 +122,7 @@ class LeanProject:
         plugins: Iterable[Plugin] = ALL_PLUGINS,
         run_initializers: bool = True,
         force: bool = False,
+        max_workers: int = 4,
     ) -> list[tuple[LeanName, CompletedProcess]]:
         """
         Run jixia on every file in the context of this project.
@@ -139,7 +140,7 @@ class LeanProject:
         self.output_dir.mkdir(exist_ok=True)
         output_dir_path = self.output_dir.resolve()
         ret = []
-        with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {
                 executor.submit(
                     run_jixia,
