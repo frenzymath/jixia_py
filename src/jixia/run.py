@@ -8,7 +8,7 @@ from string import Template
 from subprocess import CompletedProcess
 from typing import Optional, Iterable, TypeVar
 
-from .structs import AnyPath, LeanName, Plugin, pp_name, is_prefix_of, plugin_short_name, ALL_PLUGINS, ModuleInfo
+from .structs import AnyPath, LeanName, Plugin, pp_name, is_prefix_of, plugin_short_name, ALL_PLUGINS, ModuleInfo, RootModel
 
 logger = logging.getLogger(__name__)
 
