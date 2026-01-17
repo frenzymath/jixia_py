@@ -6,18 +6,18 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from pathlib import Path
 from string import Template
 from subprocess import CompletedProcess
-from typing import Iterable, Optional, TypeVar
+from typing import Optional, Iterable, TypeVar
 
 from .structs import (
-    ALL_PLUGINS,
     AnyPath,
     LeanName,
-    ModuleInfo,
     Plugin,
-    RootModel,
+    pp_name,
     is_prefix_of,
     plugin_short_name,
-    pp_name,
+    ALL_PLUGINS,
+    ModuleInfo,
+    RootModel,
 )
 
 logger = logging.getLogger(__name__)
