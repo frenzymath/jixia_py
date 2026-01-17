@@ -122,7 +122,7 @@ class LeanProject:
         plugins: Iterable[Plugin] = ALL_PLUGINS,
         run_initializers: bool = True,
         force: bool = False,
-        max_workers: int = 4,
+        max_workers: int | None = None,
     ) -> list[tuple[LeanName, CompletedProcess]]:
         """
         Run jixia on every file in the context of this project.
