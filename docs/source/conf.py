@@ -12,15 +12,16 @@
 #
 import os
 import sys
+
 print(os.getcwd())
-sys.path.insert(0, os.path.abspath('../../src'))
+sys.path.insert(0, os.path.abspath("../../src"))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'jixia'
-copyright = '2024-2025, Tony Beta Lambda'
-author = 'Tony Beta Lambda'
+project = "jixia"
+copyright = "2024-2025, Tony Beta Lambda"
+author = "Tony Beta Lambda"
 
 
 # -- General configuration ---------------------------------------------------
@@ -29,18 +30,18 @@ author = 'Tony Beta Lambda'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinxcontrib.autodoc_pydantic',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinxcontrib.autodoc_pydantic",
 ]
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
-autodoc_member_order = 'bysource'
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+autodoc_member_order = "bysource"
 autodoc_pydantic_model_show_json = True
 autodoc_pydantic_model_show_config_summary = False
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -58,4 +59,4 @@ html_theme = "sphinx_rtd_theme"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]

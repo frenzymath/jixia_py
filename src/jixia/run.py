@@ -8,7 +8,17 @@ from string import Template
 from subprocess import CompletedProcess
 from typing import Optional, Iterable, TypeVar
 
-from .structs import AnyPath, LeanName, Plugin, pp_name, is_prefix_of, plugin_short_name, ALL_PLUGINS, ModuleInfo, RootModel
+from .structs import (
+    AnyPath,
+    LeanName,
+    Plugin,
+    pp_name,
+    is_prefix_of,
+    plugin_short_name,
+    ALL_PLUGINS,
+    ModuleInfo,
+    RootModel,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -17,13 +27,13 @@ executable: AnyPath = "jixia"
 
 
 def run_jixia(
-        file: AnyPath,
-        module: Optional[str] = None,
-        root: Optional[Path] = None,
-        plugins: Iterable[Plugin] = ALL_PLUGINS,
-        output_template: Template = Template("$file_dir/$module.$p.json"),
-        run_initializers: bool = True,
-        force: bool = False,
+    file: AnyPath,
+    module: Optional[str] = None,
+    root: Optional[Path] = None,
+    plugins: Iterable[Plugin] = ALL_PLUGINS,
+    output_template: Template = Template("$file_dir/$module.$p.json"),
+    run_initializers: bool = True,
+    force: bool = False,
 ) -> Optional[CompletedProcess]:
     """
     Run jixia with given options.
@@ -56,7 +66,9 @@ def run_jixia(
     for plugin in plugins:
         args.append("--" + plugin)
         p = plugin_short_name(plugin)
-        output_file = output_template.substitute(root=root, file_dir=file.parent, module=module, plugin=plugin, p=p)
+        output_file = output_template.substitute(
+            root=root, file_dir=file.parent, module=module, plugin=plugin, p=p
+        )
         output_file = Path(output_file)
         if not output_file.exists():
             run = True
@@ -79,14 +91,18 @@ class LeanProject:
         self.root = Path(root)
         self.output_dir = self.root / output_dir
 
-    def path_of_module(self, module_name: LeanName, base_dir: Optional[AnyPath] = None) -> Path:
+    def path_of_module(
+        self, module_name: LeanName, base_dir: Optional[AnyPath] = None
+    ) -> Path:
         """Return the source file of the module"""
         if base_dir is None:
             base_dir = self.root
         return Path(base_dir) / Path(*module_name).with_suffix(".lean")
 
     # TODO: align with the build system and take packages into consideration
-    def find_modules(self, base_dir: Optional[AnyPath] = None, include_hidden_dirs: bool = True) -> list[LeanName]:
+    def find_modules(
+        self, base_dir: Optional[AnyPath] = None, include_hidden_dirs: bool = True
+    ) -> list[LeanName]:
         """Return the list of all Lean modules"""
         if base_dir is None:
             base_dir = self.root
@@ -99,13 +115,13 @@ class LeanProject:
         return modules
 
     def batch_run_jixia(
-            self,
-            *,
-            base_dir: Optional[AnyPath] = None,
-            prefixes: Optional[list[LeanName]] = None,
-            plugins: Iterable[Plugin] = ALL_PLUGINS,
-            run_initializers: bool = True,
-            force: bool = False,
+        self,
+        *,
+        base_dir: Optional[AnyPath] = None,
+        prefixes: Optional[list[LeanName]] = None,
+        plugins: Iterable[Plugin] = ALL_PLUGINS,
+        run_initializers: bool = True,
+        force: bool = False,
     ) -> list[tuple[LeanName, CompletedProcess]]:
         """
         Run jixia on every file in the context of this project.
@@ -124,16 +140,19 @@ class LeanProject:
         output_dir_path = self.output_dir.resolve()
         ret = []
         with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
-            futures = {executor.submit(
-                run_jixia,
-                self.path_of_module(m, base_dir),
-                pp_name(m),
-                self.root,
-                plugins,
-                Template(str(output_dir_path) + "/$module.$p.json"),
-                run_initializers,
-                force,
-            ): m for m in modules}
+            futures = {
+                executor.submit(
+                    run_jixia,
+                    self.path_of_module(m, base_dir),
+                    pp_name(m),
+                    self.root,
+                    plugins,
+                    Template(str(output_dir_path) + "/$module.$p.json"),
+                    run_initializers,
+                    force,
+                ): m
+                for m in modules
+            }
             for f in concurrent.futures.as_completed(futures):
                 m = futures[f]
                 r: CompletedProcess | None = f.result()
