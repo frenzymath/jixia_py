@@ -215,8 +215,8 @@ class Declaration(RootModel):
     """The signature part, e.g., `{α : Sort u} (a : α) : α` in `def id {α : Sort u} (a : α) : α`"""
     modifiers: Modifiers
     params: list[Param]
-    type: Optional[Syntax]
-    value: Optional[Syntax]
+    type: Optional[PPSyntax]
+    value: Optional[PPSyntax]
     scope_info: ScopeInfo
 
 
@@ -286,6 +286,8 @@ class Goal(BaseModel):
     context: Context
     type: str
     is_prop: bool
+    pp: str
+    """Pretty-printed representation of this goal by `Meta.ppGoal`"""
 
 
 ProofState = list[Goal]
