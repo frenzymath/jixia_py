@@ -6,18 +6,18 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from pathlib import Path
 from string import Template
 from subprocess import CompletedProcess
-from typing import Optional, Iterable, TypeVar
+from typing import Iterable, Optional, TypeVar
 
 from .structs import (
+    ALL_PLUGINS,
     AnyPath,
     LeanName,
+    ModuleInfo,
     Plugin,
-    pp_name,
+    RootModel,
     is_prefix_of,
     plugin_short_name,
-    ALL_PLUGINS,
-    ModuleInfo,
-    RootModel,
+    pp_name,
 )
 
 logger = logging.getLogger(__name__)
@@ -34,6 +34,7 @@ def run_jixia(
     output_template: Template = Template("$file_dir/$module.$p.json"),
     run_initializers: bool = True,
     force: bool = False,
+    mathlib: bool = True,
 ) -> Optional[CompletedProcess]:
     """
     Run jixia with given options.
@@ -73,6 +74,9 @@ def run_jixia(
         if not output_file.exists():
             run = True
         args.append(output_file)
+    if mathlib:
+        args.append("-DautoImplicit=false")
+        args.append("-DmaxSynthPendingDepth=3")
     if run:
         args.append(file)
         logger.debug(f"run: {args}")
@@ -123,6 +127,7 @@ class LeanProject:
         run_initializers: bool = True,
         force: bool = False,
         max_workers: int | None = None,
+        mathlib: bool = True,
     ) -> list[tuple[LeanName, CompletedProcess]]:
         """
         Run jixia on every file in the context of this project.
@@ -151,6 +156,7 @@ class LeanProject:
                     Template(str(output_dir_path) + "/$module.$p.json"),
                     run_initializers,
                     force,
+                    mathlib,
                 ): m
                 for m in modules
             }
