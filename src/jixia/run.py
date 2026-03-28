@@ -35,6 +35,7 @@ def run_jixia(
     run_initializers: bool = True,
     force: bool = False,
     mathlib: bool = True,
+    timeout: float | None = None,
 ) -> Optional[CompletedProcess]:
     """
     Run jixia with given options.
@@ -53,6 +54,7 @@ def run_jixia(
             - p: short name of the plugin
     :param run_initializers: run initializers in analysis.  set to True for mathlib
     :param force: always run jixia even if all output files are already present
+    :param timeout: timeout in seconds for the jixia subprocess
     :return: the completed process object, or None if jixia was not run (when force is False and all output files are already present)
     """
     file = Path(file)
@@ -80,7 +82,9 @@ def run_jixia(
     if run:
         args.append(file)
         logger.debug(f"run: {args}")
-        return subprocess.run(args, stderr=subprocess.PIPE, cwd=root, text=True)
+        return subprocess.run(
+            args, stderr=subprocess.PIPE, cwd=root, text=True, timeout=timeout
+        )
 
 
 M = TypeVar("M", bound="RootModel")
@@ -128,6 +132,7 @@ class LeanProject:
         force: bool = False,
         max_workers: int | None = None,
         mathlib: bool = True,
+        timeout: float | None = 300,
     ) -> list[tuple[LeanName, CompletedProcess]]:
         """
         Run jixia on every file in the context of this project.
@@ -137,6 +142,7 @@ class LeanProject:
         :param run_initializers:
         :param force:
             see documentation of :func:`run_jixia`
+        :param timeout: timeout in seconds for each jixia subprocess
         :return: a list of all (module, CompletedProcess | None) pairs
         """
         modules = self.find_modules(base_dir)
@@ -157,12 +163,17 @@ class LeanProject:
                     run_initializers,
                     force,
                     mathlib,
+                    timeout,
                 ): m
                 for m in modules
             }
             for f in concurrent.futures.as_completed(futures):
                 m = futures[f]
-                r: CompletedProcess | None = f.result()
+                try:
+                    r: CompletedProcess | None = f.result()
+                except subprocess.TimeoutExpired:
+                    logger.error(f"timeout while processing {m} after {timeout}s")
+                    continue
                 ret.append((m, r))
                 if r is None:
                     logger.info(f"skip {m}")
