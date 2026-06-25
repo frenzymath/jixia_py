@@ -32,6 +32,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+cli = [
+  "typer>=0.12",
+]
 docs = [
   "sphinx",
   "sphinx-rtd-theme",
