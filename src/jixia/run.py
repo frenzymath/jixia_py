@@ -133,7 +133,7 @@ class LeanProject:
         force: bool = False,
         max_workers: int | None = None,
         mathlib: bool = True,
-        timeout: float | None = 300,
+        timeout: float | None = None,
     ) -> list[tuple[LeanName, CompletedProcess]]:
         """
         Run jixia on every file in the context of this project.
