@@ -54,6 +54,7 @@ def run_jixia(
             - p: short name of the plugin
     :param run_initializers: run initializers in analysis.  set to True for mathlib
     :param force: always run jixia even if all output files are already present
+    :param mathlib: add options that match mathlib's Lean configuration
     :param timeout: timeout in seconds for the jixia subprocess
     :return: the completed process object, or None if jixia was not run (when force is False and all output files are already present)
     """
@@ -137,10 +138,13 @@ class LeanProject:
         """
         Run jixia on every file in the context of this project.
 
+        :param base_dir: directory to search for Lean modules. defaults to the project root
         :param prefixes: only process modules with one of the prefixes
         :param plugins:
         :param run_initializers:
         :param force:
+        :param max_workers:
+        :param mathlib:
             see documentation of :func:`run_jixia`
         :param timeout: timeout in seconds for each jixia subprocess
         :return: a list of all (module, CompletedProcess | None) pairs
