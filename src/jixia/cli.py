@@ -49,7 +49,9 @@ def run(
     ],
     base_dir: Annotated[
         Path | None,
-        typer.Option(help="Directory to scan for Lean files. Defaults to PROJECT_ROOT."),
+        typer.Option(
+            help="Directory to scan for Lean files. Defaults to PROJECT_ROOT."
+        ),
     ] = None,
     prefixes: Annotated[
         str | None,
@@ -84,6 +86,13 @@ def run(
             help="Run Lean initializers during analysis.",
         ),
     ] = True,
+    mathlib: Annotated[
+        bool,
+        typer.Option(
+            "--mathlib/--no-mathlib",
+            help="Add options that match mathlib's Lean configuration.",
+        ),
+    ] = True,
     log_level: Annotated[
         str,
         typer.Option(help="Python logging level."),
@@ -107,6 +116,7 @@ def run(
         run_initializers=run_initializers,
         force=force,
         max_workers=max_workers,
+        mathlib=mathlib,
     )
 
 
